@@ -60,7 +60,7 @@ namespace GosZakupkiBot
 			var res = Properties.Settings.Default.Items;
 			if (res != String.Empty)
 			{
-				SeleniumBot.Items = JsonConvert.DeserializeObject<List<Item>>(res);
+				//SeleniumBot.Items = JsonConvert.DeserializeObject<List<Item>>(res);
 
 			}
 

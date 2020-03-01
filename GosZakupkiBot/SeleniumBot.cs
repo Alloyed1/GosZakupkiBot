@@ -104,6 +104,23 @@ namespace GosZakupkiBot
 				.Text;
 
 			item.ActualPrice = float.Parse(actualPrice.Replace(" ₽", ""));
+
+			try
+			{
+				var nextBet = browser
+					.FindElements(By.TagName("span"))
+					.FirstOrDefault(f => f.Text == "Возможная ставка")
+					?.FindElement(By.XPath("./parent::*"))
+					.FindElements(By.TagName("span"))[1]
+					.Text;
+				
+				item.NextBet = float.Parse(nextBet.Replace(" ₽", ""));
+			}
+			catch
+			{
+				item.NextBet = 0;
+			}
+			
 			Browsers.FirstOrDefault(f => f.Browser == browser).IsFree = true;
 			if (isReturn)
 			{

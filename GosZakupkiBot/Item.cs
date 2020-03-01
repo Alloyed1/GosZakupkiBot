@@ -10,9 +10,9 @@ namespace GosZakupkiBot
         [DisplayName("Статус")]
         public string Status { get; set; }
         [DisplayName("Возм.Ставка")]
-        public string NextBet { get; set; }
+        public float NextBet { get; set; }
         [DisplayName("Рентабел.")]
-        public string Rentabel => "200 20%";
+        public string Rentabel => $"{NextBet - MinPrice} Р ({Math.Round((int)(NextBet - MinPrice)/NextBet*100, 1)})";
         [DisplayName("Мин.Цена")]
         public float MinPrice { get; set; }
         [DisplayName("Цена")]
