@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace GosZakupkiBot
 {
@@ -25,5 +26,6 @@ namespace GosZakupkiBot
         public string Comment { get; set; }
         [DisplayName("CRM")]
         public string CRMLink { get; set; }
+
     }
 }

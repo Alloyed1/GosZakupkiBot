@@ -37,7 +37,7 @@ namespace GosZakupkiBot
 					Browser = browser
 				});
 
-				browser.Navigate().GoToUrl("https://zakupki.mos.ru/auction/710761");
+				browser.Navigate().GoToUrl("https://zakupki.mos.ru");
 
 			}
 
@@ -45,14 +45,115 @@ namespace GosZakupkiBot
 			return Task.CompletedTask;
 		}
 
-		public async static Task<Item> ParseLink(string link, bool isReturn, int delay)
+		public async static Task MakeBet(Item item)
+		{
+			await Task.Delay(new Random().Next(7000, 30000));
+			var browser = Browsers.FirstOrDefault(f => f.IsFree)?.Browser;
+
+			if (browser == null)
+			{
+				await Task.Delay(7000);
+				_ = Task.Run(() => MakeBet(item));
+				return;
+			}
+
+
+			Browsers.FirstOrDefault(f => f.Browser == browser).IsFree = false;
+
+			browser.Navigate().GoToUrl("https://zakupki.mos.ru/auction/" + item.Number);
+			await Task.Delay(4000);
+			bool isSet = false;
+			try
+			{
+				var date = JsonConvert.DeserializeObject<ParseItem>(Properties.Settings.Default.DateParse);
+				var datetimeText = browser
+					.FindElements(By.TagName("label"))
+					.FirstOrDefault(f => f.Text == date.Text)
+					?.FindElement(By.XPath("./parent::*"))
+					.FindElement(By.TagName(date.Tag))
+					.Text;
+
+				var datetime = Convert.ToDateTime(datetimeText.Split(new string[] { "по " }, StringSplitOptions.None)[1]);
+				var dateTimeSpan = (datetime - DateTime.Now);
+				Items.FirstOrDefault(f => f.Number == item.Number).Ostalos = (datetime - DateTime.Now);
+				item.Ostalos = new TimeSpan(dateTimeSpan.Days, dateTimeSpan.Hours, dateTimeSpan.Minutes,
+					dateTimeSpan.Seconds);
+
+				var nextBet = browser
+					.FindElements(By.TagName("span"))
+					.FirstOrDefault(f => f.Text == "Возможная ставка")
+					?.FindElement(By.XPath("./parent::*"))
+					.FindElements(By.TagName("span"))[1]
+					.Text;
+
+
+				
+				var num = float.Parse(nextBet.Replace(" ₽", ""));
+				Items.FirstOrDefault(f => f.Number == item.Number).NextBet = num;
+				
+				
+				if (num >= item.MinPrice)
+				{
+					isSet = true;
+				}
+				
+
+			}
+			catch
+			{
+				item.NextBet = 0;
+			}
+
+			if (isSet)
+			{
+				var makeBetBtn = browser.FindElements(By.TagName("button")).FirstOrDefault(f => f.Text == "Сделать ставку");
+				if (makeBetBtn == null)
+				{
+					return;
+				}
+				makeBetBtn.Click();
+
+				await Task.Delay(2400);
+
+				browser.FindElements(By.TagName("button"))
+					.FirstOrDefault(f => f.Text == "Принять условия")?.Click();
+			
+				await Task.Delay(1500);
+			
+				browser.FindElements(By.TagName("button")).Where(f => f.Text == "Сделать ставку").ToList()[1].Click();
+			}
+
+			
+			
+			Browsers.FirstOrDefault(f => f.Browser == browser).IsFree = true;
+
+		}
+
+		public async static Task GoToUrl(string link)
 		{
 			var browser = Browsers.FirstOrDefault(f => f.IsFree)?.Browser;
 
 			if (browser == null)
 			{
-				await Task.Delay(5000);
-				_ = Task.Run(() => ParseLink(link, isReturn, 0));
+				MessageBox.Show("Свободных браузеров нет");
+				return;
+			}
+			Browsers.FirstOrDefault(f => f.Browser == browser).IsFree = false;
+
+			browser.Navigate().GoToUrl(link);
+
+			Browsers.FirstOrDefault(f => f.Browser == browser).IsFree = true;
+
+		}
+
+		public async static Task<Item> ParseLink(string link, bool isReturn, int delay, bool isBet)
+		{
+			var browser = Browsers.FirstOrDefault(f => f.IsFree)?.Browser;
+
+			if (browser == null)
+			{
+				await Task.Delay(7000);
+				_ = Task.Run(() => ParseLink(link, isReturn, 0, isBet));
 				return null;
 			}
 
@@ -76,50 +177,54 @@ namespace GosZakupkiBot
 					.FindElement(By.TagName(status.Tag))
 					.Text;
 			}
-			catch
+			catch(Exception ex)
 			{
-				_ = Task.Run(() => ParseLink(link, isReturn, 0));
+				Browsers.FirstOrDefault(f => f.Browser == browser).IsFree = true;
+				_ = Task.Run(() => ParseLink(link, isReturn, 0, isBet));
 				return null;
 			}
 
-
-			var datetimeText = browser
+			if(item.Status == "АКТИВНАЯ")
+			{
+				var datetimeText = browser
 				.FindElements(By.TagName("label"))
 				.FirstOrDefault(f => f.Text == date.Text)
 				?.FindElement(By.XPath("./parent::*"))
 				.FindElement(By.TagName(date.Tag))
 				.Text;
 
-			var datetime = Convert.ToDateTime(datetimeText.Split(new string[] {"по "}, StringSplitOptions.None)[1]);
+				var datetime = Convert.ToDateTime(datetimeText.Split(new string[] { "по " }, StringSplitOptions.None)[1]);
 
-			var dateTimeSpan = (datetime - DateTime.Now);
-			item.Ostalos = new TimeSpan(dateTimeSpan.Days, dateTimeSpan.Hours, dateTimeSpan.Minutes,
-				dateTimeSpan.Seconds);
+				var dateTimeSpan = (datetime - DateTime.Now);
+				item.Ostalos = new TimeSpan(dateTimeSpan.Days, dateTimeSpan.Hours, dateTimeSpan.Minutes,
+					dateTimeSpan.Seconds);
 
-			var actualPrice = browser
-				.FindElements(By.TagName("label"))
-				.FirstOrDefault(f => f.Text == price.Text)
-				?.FindElement(By.XPath("./parent::*"))
-				.FindElement(By.TagName(price.Tag))
-				.Text;
-
-			item.ActualPrice = float.Parse(actualPrice.Replace(" ₽", ""));
-
-			try
-			{
-				var nextBet = browser
-					.FindElements(By.TagName("span"))
-					.FirstOrDefault(f => f.Text == "Возможная ставка")
+				var actualPrice = browser
+					.FindElements(By.TagName("label"))
+					.FirstOrDefault(f => f.Text == price.Text)
 					?.FindElement(By.XPath("./parent::*"))
-					.FindElements(By.TagName("span"))[1]
+					.FindElement(By.TagName(price.Tag))
 					.Text;
-				
-				item.NextBet = float.Parse(nextBet.Replace(" ₽", ""));
+
+				item.ActualPrice = float.Parse(actualPrice.Split('₽')[0].Replace(" ₽", ""));
+
+				try
+				{
+					var nextBet = browser
+						.FindElements(By.TagName("span"))
+						.FirstOrDefault(f => f.Text == "Возможная ставка")
+						?.FindElement(By.XPath("./parent::*"))
+						.FindElements(By.TagName("span"))[1]
+						.Text;
+
+					item.NextBet = float.Parse(nextBet.Replace(" ₽", ""));
+				}
+				catch
+				{
+					item.NextBet = 0;
+				}
 			}
-			catch
-			{
-				item.NextBet = 0;
-			}
+			
 			
 			Browsers.FirstOrDefault(f => f.Browser == browser).IsFree = true;
 			if (isReturn)
@@ -131,19 +236,21 @@ namespace GosZakupkiBot
 			view = new BindingListView<Item>(Items);
 			MyDataGrid.DataSource = view;
 			
+			if(isBet) _ =Task.Run(() => MakeBet(item));
+			
 			return null;
 
 		}
 
-		public static async Task ParseAndUpdate(int index)
+		public static async Task ParseAndUpdate(Item itemParse)
 		{
-			var item = await ParseLink("https://zakupki.mos.ru/auction/" + index, true,
-				0);
+			var item = await ParseLink("https://zakupki.mos.ru/auction/" + itemParse.Number, true,
+				0, false);
 
-			Items.FirstOrDefault(f => f.Number == index).Ostalos = item.Ostalos;
-			Items.FirstOrDefault(f => f.Number == index).Status = item.Status;
-			Items.FirstOrDefault(f => f.Number == index).ActualPrice = item.ActualPrice;
-			Items.FirstOrDefault(f => f.Number == index).NextBet = item.NextBet;
+			Items.FirstOrDefault(f => f.Number == itemParse.Number).Ostalos = item.Ostalos;
+			Items.FirstOrDefault(f => f.Number == itemParse.Number).Status = item.Status;
+			Items.FirstOrDefault(f => f.Number == itemParse.Number).ActualPrice = item.ActualPrice;
+			Items.FirstOrDefault(f => f.Number == itemParse.Number).NextBet = item.NextBet;
 		}
 
 		public static async Task ParseAll()
@@ -162,13 +269,15 @@ namespace GosZakupkiBot
 				
 				textBoxFirst.Invoke(new Action(() => { textBoxFirst.Text = (count + 1).ToString(); }));
 				
-				var num = Items[count].Number;
 
-				_ = Task.Run(() => ParseAndUpdate(num));
+				_ = Task.Run(() => ParseAndUpdate(Items[count]));
 				await Task.Delay(700);
 
 				count++;
 			}
+
+			Properties.Settings.Default.LastParse = new TimeSpan().Add(TimeSpan.FromMinutes(Properties.Settings.Default.ParseAllTimeout)).ToString();
+			Properties.Settings.Default.Save();
 
 			await UpdateDataGrid();
 		}

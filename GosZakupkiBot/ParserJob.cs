@@ -11,6 +11,8 @@ namespace GosZakupkiBot
 	{
 		public async Task Execute(IJobExecutionContext context)
 		{
+			Properties.Settings.Default.LastParse = "";
+			Properties.Settings.Default.Save();
 			await SeleniumBot.ParseAll();
 		}
 	}

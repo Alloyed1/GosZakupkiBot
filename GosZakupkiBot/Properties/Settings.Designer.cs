@@ -130,5 +130,17 @@ namespace GosZakupkiBot.Properties {
                 this["Items"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastParse {
+            get {
+                return ((string)(this["LastParse"]));
+            }
+            set {
+                this["LastParse"] = value;
+            }
+        }
     }
 }
