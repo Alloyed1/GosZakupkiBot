@@ -23,6 +23,29 @@ namespace GosZakupkiBot
                 }
 
             }
+            var toNextParse = Properties.Settings.Default.LastParse;
+            
+            if(toNextParse == "")
+            {
+                SeleniumBot.textBoxTimer.Invoke(new Action(() =>
+                {
+                    SeleniumBot.textBoxTimer.Text = "Сейчас";
+                }));
+            }
+            else
+            {
+                var timeSpans = TimeSpan.Parse(toNextParse).Add(TimeSpan.FromSeconds(-1));
+                Properties.Settings.Default.LastParse = timeSpans.ToString();
+                Properties.Settings.Default.Save();
+
+                SeleniumBot.textBoxTimer.Invoke(new Action(() =>
+                {
+                    SeleniumBot.textBoxTimer.Text = $"{timeSpans.Minutes}:{timeSpans.Seconds}";
+                }));
+
+            }
+            
+
             
         }
     }

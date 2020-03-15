@@ -15,7 +15,11 @@ using Newtonsoft.Json;
 namespace GosZakupkiBot
 {
 	public partial class Form1 : Form
+
 	{
+
+		bool isStart = false;
+		bool IsInitial = false;
 		public Form1()
 		{
 			InitializeComponent();
@@ -23,6 +27,8 @@ namespace GosZakupkiBot
 
 		public async Task LoadSettings()
 		{
+			numericUpDown3.Maximum = int.MaxValue;
+
 			numericUpDown1.Value = Properties.Settings.Default.ParseToEnd;
 			numericUpDown2.Value = Properties.Settings.Default.ParseAllTimeout;
 			numericUpDown3.Value = Properties.Settings.Default.StartParse;
@@ -34,17 +40,17 @@ namespace GosZakupkiBot
 			textBox1.Text = status.ClassName;
 			textBox4.Text = status.Tag;
 			textBox5.Text = status.Text;
-			
+
 			textBox8.Text = date.ClassName;
 			textBox7.Text = date.Tag;
 			textBox6.Text = date.Text;
-		
-			
+
+
 			textBox14.Text = price.ClassName;
 			textBox13.Text = price.Tag;
 			textBox12.Text = price.Text;
-			
-			
+
+
 
 
 		}
@@ -60,7 +66,7 @@ namespace GosZakupkiBot
 			var res = Properties.Settings.Default.Items;
 			if (res != String.Empty)
 			{
-				//SeleniumBot.Items = JsonConvert.DeserializeObject<List<Item>>(res);
+				SeleniumBot.Items = JsonConvert.DeserializeObject<List<Item>>(res);
 
 			}
 
@@ -80,8 +86,10 @@ namespace GosZakupkiBot
 			
 			SeleniumBot.MyDataGrid = dataGridView1;
 			await SeleniumBot.UpdateDataGrid();
-			
-			
+
+			startStop_btn.BackColor = Color.Red;
+
+
 
 
 
@@ -136,7 +144,7 @@ namespace GosZakupkiBot
 
 		private async void addUrl_btn_Click(object sender, EventArgs e)
 		{
-			await SeleniumBot.ParseLink(link_textBox.Text, false, 0);
+			await SeleniumBot.ParseLink(link_textBox.Text, false, 0, parseNow_checkBox.Checked);
 		}
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -162,9 +170,53 @@ namespace GosZakupkiBot
 			Properties.Settings.Default.Save();
 		}
 
-		private void startStop_btn_Click(object sender, EventArgs e)
+		private async void startStop_btn_Click(object sender, EventArgs e)
 		{
-			BackgroundScheduler.Start();
+			if (!IsInitial)
+			{
+				BackgroundScheduler.Start();
+				startStop_btn.BackColor = Color.Green;
+				IsInitial = true;
+			}
+		    else if (isStart)
+			{
+				await BackgroundScheduler.Scheduler.PauseAll();
+				startStop_btn.BackColor = Color.Red;
+				isStart = false;
+			}
+			else
+			{
+				await BackgroundScheduler.Scheduler.ResumeAll();
+				startStop_btn.BackColor = Color.Green;
+				isStart = true;
+			}
+			
+		}
+
+		private void deleteLink_btn_Click(object sender, EventArgs e)
+		{
+			link_textBox.Text = String.Empty;
+		}
+
+		private async void goToUrl_btn_Click(object sender, EventArgs e)
+		{
+			_ = Task.Run(() => SeleniumBot.GoToUrl(link_textBox.Text));
+		}
+
+		private void dataGridView1_ControlRemoved(object sender, ControlEventArgs e)
+		{
+			
+		}
+
+		private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+		{
+			
+		}
+
+		private async void button3_Click(object sender, EventArgs e)
+		{
+			SeleniumBot.Items.Remove(SeleniumBot.Items.FirstOrDefault(f => f.Number == int.Parse(textBox9.Text)));
+			await SeleniumBot.UpdateDataGrid();
 		}
 	}
 }
