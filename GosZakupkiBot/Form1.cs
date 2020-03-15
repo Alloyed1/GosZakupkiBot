@@ -67,8 +67,15 @@ namespace GosZakupkiBot
 			SeleniumBot.textBoxFirst = textBox2;
 			SeleniumBot.textBoxSecond = textBox3;
 			SeleniumBot.textBoxTimer = proverka_textBox;
+			try
+			{
+				await LoadSettings();
+			}
+			catch
+			{
 
-			await LoadSettings();
+			}
+			
 			dataGridView1.AllowUserToAddRows = false;
 			
 			SeleniumBot.MyDataGrid = dataGridView1;
