@@ -17,7 +17,8 @@ namespace GosZakupkiBot
                 {
                     if(item.Ostalos.TotalMinutes <= Properties.Settings.Default.StartParse)
                     {
-                        if(SeleniumBot.Items.FirstOrDefault(f => f.Number == item.Number).MinPrice <= SeleniumBot.Items.FirstOrDefault(f => f.Number == item.Number).NextBet || SeleniumBot.Items.FirstOrDefault(f => f.Number == item.Number).NextBet == 0)
+                        if (SeleniumBot.Items.FirstOrDefault(f => f.Number == item.Number).MinPrice <= SeleniumBot.Items.FirstOrDefault(f => f.Number == item.Number).NextBet 
+                                && SeleniumBot.Items.FirstOrDefault(f => f.Number == item.Number).MinPrice != 0)
                         {
                             _ = Task.Run(() => SeleniumBot.MakeBet(item));
                             await Task.Delay(500);

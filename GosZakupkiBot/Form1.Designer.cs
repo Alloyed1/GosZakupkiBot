@@ -30,6 +30,8 @@
 		{
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button3 = new System.Windows.Forms.Button();
+            this.textBox9 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.textBox3 = new System.Windows.Forms.TextBox();
@@ -91,8 +93,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox9 = new System.Windows.Forms.TextBox();
-            this.button3 = new System.Windows.Forms.Button();
+            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -116,11 +118,11 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(4, 4);
+            this.tabControl1.Location = new System.Drawing.Point(4, 1);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1081, 836);
+            this.tabControl1.Size = new System.Drawing.Size(1387, 839);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -142,15 +144,32 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(1073, 807);
+            this.tabPage1.Size = new System.Drawing.Size(1379, 810);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Робот";
             this.tabPage1.UseVisualStyleBackColor = true;
             this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(311, 187);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(94, 23);
+            this.button3.TabIndex = 17;
+            this.button3.Text = "Удалить";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // textBox9
+            // 
+            this.textBox9.Location = new System.Drawing.Point(177, 187);
+            this.textBox9.Name = "textBox9";
+            this.textBox9.Size = new System.Drawing.Size(128, 22);
+            this.textBox9.TabIndex = 16;
+            // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(893, 185);
+            this.button2.Location = new System.Drawing.Point(1212, 187);
             this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(159, 28);
@@ -166,7 +185,7 @@
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.Size = new System.Drawing.Size(1048, 521);
+            this.dataGridView1.Size = new System.Drawing.Size(1359, 583);
             this.dataGridView1.TabIndex = 14;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView1_RowsRemoved);
@@ -174,7 +193,7 @@
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(776, 144);
+            this.textBox3.Location = new System.Drawing.Point(1188, 140);
             this.textBox3.Margin = new System.Windows.Forms.Padding(4);
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
@@ -184,7 +203,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(752, 148);
+            this.label3.Location = new System.Drawing.Point(1176, 143);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(12, 17);
@@ -193,7 +212,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(713, 144);
+            this.textBox2.Location = new System.Drawing.Point(1139, 141);
             this.textBox2.Margin = new System.Windows.Forms.Padding(4);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
@@ -203,7 +222,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(629, 146);
+            this.label2.Location = new System.Drawing.Point(1044, 143);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(87, 17);
@@ -212,7 +231,7 @@
             // 
             // proverka_textBox
             // 
-            this.proverka_textBox.Location = new System.Drawing.Point(488, 143);
+            this.proverka_textBox.Location = new System.Drawing.Point(904, 140);
             this.proverka_textBox.Margin = new System.Windows.Forms.Padding(4);
             this.proverka_textBox.Name = "proverka_textBox";
             this.proverka_textBox.ReadOnly = true;
@@ -222,7 +241,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(367, 146);
+            this.label1.Location = new System.Drawing.Point(781, 144);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(115, 17);
@@ -231,7 +250,7 @@
             // 
             // updateLots_btn
             // 
-            this.updateLots_btn.Location = new System.Drawing.Point(163, 140);
+            this.updateLots_btn.Location = new System.Drawing.Point(563, 140);
             this.updateLots_btn.Margin = new System.Windows.Forms.Padding(4);
             this.updateLots_btn.Name = "updateLots_btn";
             this.updateLots_btn.Size = new System.Drawing.Size(196, 28);
@@ -242,7 +261,7 @@
             // 
             // startStop_btn
             // 
-            this.startStop_btn.Location = new System.Drawing.Point(12, 140);
+            this.startStop_btn.Location = new System.Drawing.Point(177, 138);
             this.startStop_btn.Margin = new System.Windows.Forms.Padding(4);
             this.startStop_btn.Name = "startStop_btn";
             this.startStop_btn.Size = new System.Drawing.Size(143, 28);
@@ -259,7 +278,7 @@
             this.groupBox1.Controls.Add(this.deleteLink_btn);
             this.groupBox1.Controls.Add(this.goToUrl_btn);
             this.groupBox1.Controls.Add(this.link_textBox);
-            this.groupBox1.Location = new System.Drawing.Point(8, 41);
+            this.groupBox1.Location = new System.Drawing.Point(177, 40);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
@@ -334,6 +353,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.button4);
+            this.tabPage2.Controls.Add(this.textBox10);
             this.tabPage2.Controls.Add(this.groupBox9);
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Controls.Add(this.groupBox2);
@@ -341,7 +362,7 @@
             this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(1073, 807);
+            this.tabPage2.Size = new System.Drawing.Size(1379, 810);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Настройки";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -796,28 +817,29 @@
             this.label4.TabIndex = 0;
             this.label4.Text = "Начинать парсить после";
             // 
-            // textBox9
+            // textBox10
             // 
-            this.textBox9.Location = new System.Drawing.Point(12, 190);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(128, 22);
-            this.textBox9.TabIndex = 16;
+            this.textBox10.Location = new System.Drawing.Point(932, 35);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.ReadOnly = true;
+            this.textBox10.Size = new System.Drawing.Size(426, 22);
+            this.textBox10.TabIndex = 3;
             // 
-            // button3
+            // button4
             // 
-            this.button3.Location = new System.Drawing.Point(146, 190);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(94, 23);
-            this.button3.TabIndex = 17;
-            this.button3.Text = "Удалить";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button4.Location = new System.Drawing.Point(1233, 63);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(125, 23);
+            this.button4.TabIndex = 4;
+            this.button4.Text = "Создать ключ";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1080, 838);
+            this.ClientSize = new System.Drawing.Size(1393, 862);
             this.Controls.Add(this.tabControl1);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
@@ -831,6 +853,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
@@ -920,6 +943,8 @@
 		private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.TextBox textBox10;
     }
 }
 

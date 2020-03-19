@@ -34,7 +34,8 @@ namespace GosZakupkiBot
 				var browser = new ChromeDriver();
 				Browsers.Add(new BrowsersModel()
 				{
-					Browser = browser
+					Browser = browser,
+					IsFree = true
 				});
 
 				browser.Navigate().GoToUrl("https://zakupki.mos.ru");

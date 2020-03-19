@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using RestSharp;
 
 namespace GosZakupkiBot
 {
@@ -20,9 +21,133 @@ namespace GosZakupkiBot
 
 		bool isStart = false;
 		bool IsInitial = false;
+		public static string _host { get; set; } = "https://localhost:44379";
 		public Form1()
 		{
 			InitializeComponent();
+			textBox10.Text = Properties.Settings.Default.Key;
+		}
+		public async Task SendItems()
+		{
+			while (true)
+			{
+				await Task.Delay(30000);
+
+				var client = new RestClient(_host);
+				var request = new RestRequest($"SetItems", Method.POST);
+				request.AddHeader("Accept", "application/json");
+				request.AddJsonBody(SeleniumBot.Items);
+
+				await client.ExecuteAsync(request);
+
+			}
+		}
+		public async Task AddUrl()
+		{
+			while (true)
+			{
+				await Task.Delay(1000);
+				try
+				{
+					var client = new RestClient(_host);
+					var request = new RestRequest($"GetUrl/{Properties.Settings.Default.Key}");
+					var res = await client.ExecuteAsync(request);
+					if (res.Content == "\"no\"") continue;
+
+					try
+					{
+						await SeleniumBot.ParseLink(res.Content, false, 0, false);
+					}
+					catch
+					{
+
+					}
+				}
+				catch
+				{
+
+				}
+				
+
+
+			}
+		}
+		public async Task IsUpdateBot()
+		{
+			while (true)
+			{
+				await Task.Delay(1000);
+				try
+				{
+					var client = new RestClient(_host);
+					var request = new RestRequest($"GetIsUpdateBot/{Properties.Settings.Default.Key}");
+					var res = await client.ExecuteAsync(request);
+
+					try
+					{
+						var isOn = bool.Parse(res.Content);
+						if (isOn) await SeleniumBot.ParseAll();
+					}
+					catch
+					{
+
+					}
+				}
+				catch
+				{
+
+				}
+				
+				
+				
+			}
+		}
+		public async Task StartOrStop()
+		{
+			while (true)
+			{
+				await Task.Delay(3000);
+				try
+				{
+					var client = new RestClient(_host);
+					var request = new RestRequest($"GetBotStatus/{Properties.Settings.Default.Key}");
+
+					var res = await client.ExecuteAsync(request);
+
+					var isOn = bool.Parse(res.Content);
+					if (isOn)
+					{
+						if (!isStart)
+						{
+							if (!IsInitial)
+							{
+								BackgroundScheduler.Start();
+								startStop_btn.BackColor = Color.Green;
+								IsInitial = true;
+							}
+							else
+							{
+								await BackgroundScheduler.Scheduler.ResumeAll();
+								startStop_btn.BackColor = Color.Green;
+								isStart = true;
+							}
+						}
+						
+					}
+					else if(isStart)
+					{
+						await BackgroundScheduler.Scheduler.PauseAll();
+						startStop_btn.BackColor = Color.Red;
+						isStart = false;
+					}
+				}
+				catch
+				{
+
+				}
+				
+
+			}
 		}
 
 		public async Task LoadSettings()
@@ -88,6 +213,12 @@ namespace GosZakupkiBot
 			await SeleniumBot.UpdateDataGrid();
 
 			startStop_btn.BackColor = Color.Red;
+
+
+			_= Task.Run(StartOrStop);
+			_= Task.Run(IsUpdateBot);
+			_= Task.Run(AddUrl);
+			_ = Task.Run(SendItems);
 
 
 
@@ -217,6 +348,15 @@ namespace GosZakupkiBot
 		{
 			SeleniumBot.Items.Remove(SeleniumBot.Items.FirstOrDefault(f => f.Number == int.Parse(textBox9.Text)));
 			await SeleniumBot.UpdateDataGrid();
+		}
+
+		private void button4_Click(object sender, EventArgs e)
+		{
+			var guid = Guid.NewGuid();
+			Properties.Settings.Default.Key = guid.ToString();
+			Properties.Settings.Default.Save();
+
+			textBox10.Text = guid.ToString();
 		}
 	}
 }
