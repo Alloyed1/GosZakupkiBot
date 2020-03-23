@@ -159,12 +159,19 @@ namespace GosZakupkiBot
 			}
 
 			Browsers.FirstOrDefault(f => f.Browser == browser).IsFree = false;
-
-			browser.Navigate().GoToUrl(link);
+			try
+			{
+				browser.Navigate().GoToUrl(link.Replace("\"", ""));
+			}
+			catch(Exception ex)
+			{
+				Browsers.FirstOrDefault(f => f.Browser == browser).IsFree = true;
+			}
+			
 			await Task.Delay(3000);
 
 			var item = new Item();
-			item.Number = int.Parse(link.Replace("//", "").Split('/')[2]);
+			item.Number = int.Parse(link.Replace("\"", "").Replace("//", "").Split('/')[2]);
 
 			var status = JsonConvert.DeserializeObject<ParseItem>(Properties.Settings.Default.StatusParse);
 			var date = JsonConvert.DeserializeObject<ParseItem>(Properties.Settings.Default.DateParse);

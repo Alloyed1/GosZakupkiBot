@@ -21,7 +21,7 @@ namespace GosZakupkiBot
 
 		bool isStart = false;
 		bool IsInitial = false;
-		public static string _host { get; set; } = "https://localhost:44379";
+		public static string _host { get; set; } = "http://195.66.114.19";
 		public Form1()
 		{
 			InitializeComponent();
@@ -31,7 +31,7 @@ namespace GosZakupkiBot
 		{
 			while (true)
 			{
-				await Task.Delay(30000);
+				await Task.Delay(5000);
 
 				var client = new RestClient(_host);
 				var request = new RestRequest($"SetItems", Method.POST);
@@ -52,7 +52,7 @@ namespace GosZakupkiBot
 					var client = new RestClient(_host);
 					var request = new RestRequest($"GetUrl/{Properties.Settings.Default.Key}");
 					var res = await client.ExecuteAsync(request);
-					if (res.Content == "\"no\"") continue;
+					if (res.Content == "\"no\"" || res.Content == "") continue;
 
 					try
 					{
@@ -102,11 +102,71 @@ namespace GosZakupkiBot
 				
 			}
 		}
+		public async Task DeleteItem()
+		{
+			while (true)
+			{
+				await Task.Delay(300);
+				try
+				{
+					var client = new RestClient(_host);
+					var request = new RestRequest($"GetDeleteItems");
+
+					var content = client.Execute(request).Content;
+					var num = int.Parse(content);
+					if(num != 0)
+					{
+						SeleniumBot.Items.Remove(SeleniumBot.Items.FirstOrDefault(f => f.Number == num));
+						await SeleniumBot.UpdateDataGrid();
+
+						//Properties.Settings.Default.Items = JsonConvert.SerializeObject(SeleniumBot.Items);
+						//Properties.Settings.Default.Save();
+					}
+					
+				}
+				catch(Exception ex)
+				{
+
+				}
+			}
+		}
+		public async Task EditItem()
+		{
+			while (true)
+			{
+				await Task.Delay(200);
+				try
+				{
+					var client = new RestClient(_host);
+					var request = new RestRequest($"GetEditItem");
+
+					var content = client.Execute(request).Content.Replace("\"", "");
+					if (content == "") continue;
+
+					var num = int.Parse(content.Split(',')[0]);
+					var price = float.Parse(content.Split(',')[1]);
+					var comment = content.Split(',')[2];
+					var crm = content.Split(',')[2];
+
+					SeleniumBot.Items.FirstOrDefault(f => f.Number == num).MinPrice = price;
+					SeleniumBot.Items.FirstOrDefault(f => f.Number == num).Comment = comment;
+					SeleniumBot.Items.FirstOrDefault(f => f.Number == num).CRMLink = crm;
+
+					await SeleniumBot.UpdateDataGrid();
+
+
+				}
+				catch (Exception ex)
+				{
+
+				}
+			}
+		}
 		public async Task StartOrStop()
 		{
 			while (true)
 			{
-				await Task.Delay(3000);
+				await Task.Delay(1000);
 				try
 				{
 					var client = new RestClient(_host);
@@ -218,7 +278,9 @@ namespace GosZakupkiBot
 			_= Task.Run(StartOrStop);
 			_= Task.Run(IsUpdateBot);
 			_= Task.Run(AddUrl);
-			_ = Task.Run(SendItems);
+			_= Task.Run(SendItems);
+			_= Task.Run(DeleteItem);
+			_ = Task.Run(EditItem);
 
 
 
